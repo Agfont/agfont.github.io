@@ -1,0 +1,68 @@
+<type-writer>
+  <h5></h5>
+</type-writer>
+<script>
+  class TypeWriter extends HTMLElement {
+		constructor() {
+			super();
+
+      let text = "Hello, I'm a software engineer who loves building things!";
+      // Get h5 element
+      const typeWriter = this.querySelector('h5')!;
+      let index = 0;
+      const startTyping = () => {
+        typeWriter.textContent = '';
+        index = 0;
+        type();
+      };
+
+      // Type the text one character at a time
+      const type = () => {
+        if (index < text.length) {
+          typeWriter.textContent += text.charAt(index);
+          index++;
+          setTimeout(type, 30);
+        } else {
+          setTimeout(startTyping, 1000); // Wait 1 second before restarting the typing effect
+        }
+      };
+
+      startTyping();
+    }
+  }
+  customElements.define('type-writer', TypeWriter);
+</script>
+
+<style>
+  type-writer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto; /* Distributes available space evenly */
+    width: 664px;
+    height: 30px;
+  }
+  h5 {
+    display: inline-block;
+    border-right: 6px solid currentColor;
+    text-align: center;
+    animation: blink-cursor 1s steps(1) infinite;
+  }
+
+  @keyframes blink-cursor {
+    0%, 50% {
+      border-right-color: currentColor;
+    }
+    51%, 100% {
+      border-right-color: transparent;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+		type-writer {
+			width: 360px;
+		}
+	}
+</style>
