@@ -6,7 +6,6 @@ import TypeWriter from './TypeWriter.astro';
 <div id="container">
 	<img id="background" src={background.src} alt="" fetchpriority="high" />
 	<TypeWriter/>
-
 </div>
 
 <style>
@@ -21,7 +20,10 @@ import TypeWriter from './TypeWriter.astro';
 	}
 
 	#container {
+		height: 100%;
 		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+		display: flex;
+		flex-direction: column;
 	}
 
 	h1 {
@@ -132,11 +134,6 @@ import TypeWriter from './TypeWriter.astro';
 	}
 
 	@media screen and (max-width: 768px) {
-		#container {
-			display: flex;
-			flex-direction: column;
-		}
-
 		#links {
 			margin-top: 1rem;
 			flex-wrap: wrap;

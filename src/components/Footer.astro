@@ -1,0 +1,51 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer>
+	<p>
+		&copy; {currentYear} Arthur Font | <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>
+	</p>
+	<div class="socials">
+		<a href="https://github.com/Agfont"> GitHub</a>
+		<a href="https://linkedin.com/in/arthurfont"> LinkedIn</a>
+	</div>
+</footer>
+
+<style>
+	footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 1rem;
+		padding: 2rem 5rem;
+		color: var(--gray-400);
+		font-size: var(--text-sm);
+	}
+
+	footer a {
+		color: var(--gray-400);
+		text-decoration: 1px solid underline transparent;
+		text-underline-offset: 0.25em;
+		transition: text-decoration-color var(--theme-transition);
+	}
+
+	footer a:hover,
+	footer a:focus {
+		text-decoration-color: currentColor;
+	}
+
+	.socials {
+		display: flex;
+		gap: 1rem;
+	}
+
+    /* If screen is too small, center everything */
+	@media (max-width: 50em) {
+		footer {
+			justify-content: center;
+            padding: 2rem;
+		}
+	}
+</style>
