@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'work'>;
+}
+
+const { project } = Astro.props;
+---
+
+<a class="work-card" href={`/work/${project.id}`} data-id={project.id}>
+  <h3 class="title">{project.data.title}</h3>
+  <p class="description">{project.data.description}</p>
+  <div class="tags">
+    {project.data.tags.map(tag => (
+      <span class="tag">{tag}</span>
+    ))}
+  </div>
+</a>
+
+<style>
+  .work-card {
+    border: 1px solid var(--gray-800);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    background-color: var(--gray-999);
+    transition: box-shadow var(--theme-transition), transform var(--theme-transition);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    /* Reset anchor default link styles so children don't appear underlined */
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .work-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .work-card:focus-visible {
+    outline: 3px solid var(--accent-regular);
+    outline-offset: 4px;
+    border-radius: 1rem;
+  }
+
+  .work-card .title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--gray-0);
+  }
+
+  .work-card .description {
+    color: var(--gray-300);
+    margin-bottom: 1rem;
+    font-size: var(--text-sm);
+    flex-grow: 1;
+  }
+
+  .work-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .work-card .tag {
+    background-color: var(--gray-800);
+    color: var(--gray-200);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+  }
+
+  .theme-dark .work-card .tag {
+    background-color: var(--gray-700);
+  }
+
+</style>

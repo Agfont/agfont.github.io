@@ -126,7 +126,7 @@ const isCurrentPage = (href: string) => {
 				setExpanded(e.matches);
 				btn.hidden = e.matches;
 			};
-			const mediaQueries = window.matchMedia('(min-width: 50em)');
+			const mediaQueries = window.matchMedia('(min-width: 768px)');
 			handleViewports(mediaQueries);
 			mediaQueries.addEventListener('change', handleViewports);
 		}
@@ -257,7 +257,7 @@ const isCurrentPage = (href: string) => {
 		height: calc(var(--icon-size) + 2 * var(--icon-padding));
 	}
 
-	@media (min-width: 50em) {
+	@media (min-width: 768px) {
 		nav {
 			display: grid;
 			grid-template-columns: 1fr auto 1fr;
