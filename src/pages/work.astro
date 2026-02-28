@@ -145,7 +145,7 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
     // Filter by tag (Multi-select)
     if (selectedTags.length > 0) {
       filtered = filtered.filter(item => 
-        selectedTags.every(tag => item.data.tags.includes(tag))
+        selectedTags.some(tag => item.data.tags.includes(tag))
       );
     }
 
