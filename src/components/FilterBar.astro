@@ -8,6 +8,7 @@ const { allTags = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', '
 <div class="filter-sort-section">
   <!-- Search Bar -->
   <div class="search-bar">
+    <label for="search-input" class="sr-only">Search projects</label>
     <input
       type="text"
       id="search-input"
@@ -19,18 +20,18 @@ const { allTags = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', '
   <div class="filters">
     <!-- Tag Filter Dropdown (Multi-select) -->
     <div class="custom-dropdown" id="tag-dropdown">
-      <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+      <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="tag-menu">
         <span class="trigger-label">Tags</span>
         <span class="filter-count" id="tag-count"></span>
-        <svg viewBox="0 0 20 20" fill="currentColor" class="dropdown-icon">
+        <svg viewBox="0 0 20 20" fill="currentColor" class="dropdown-icon" aria-hidden="true">
           <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
         </svg>
       </button>
-      <div class="dropdown-menu">
-        <div class="menu-items">
+      <div class="dropdown-menu" id="tag-menu" role="menu">
+        <div class="menu-items" role="none">
           {allTags.map(tag => (
-            <button class="menu-item tag-item" data-tag={tag}>
-              <span class="checkbox"></span>
+            <button class="menu-item tag-item" data-tag={tag} role="menuitemcheckbox" aria-checked="false">
+              <span class="checkbox" aria-hidden="true"></span>
               {tag}
             </button>
           ))}
@@ -40,18 +41,18 @@ const { allTags = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', '
 
     <!-- Sort Option Dropdown -->
     <div class="custom-dropdown" id="sort-dropdown">
-      <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+      <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="sort-menu">
         <span class="trigger-label" id="sort-label">Sort</span>
-        <svg viewBox="0 0 20 20" fill="currentColor" class="dropdown-icon">
+        <svg viewBox="0 0 20 20" fill="currentColor" class="dropdown-icon" aria-hidden="true">
           <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
         </svg>
       </button>
-      <div class="dropdown-menu">
-        <div class="menu-items">
-          <button class="menu-item sort-item active" data-sort="date-desc">Newest</button>
-          <button class="menu-item sort-item" data-sort="date-asc">Oldest</button>
-          <button class="menu-item sort-item" data-sort="name-asc">Name (A-Z)</button>
-          <button class="menu-item sort-item" data-sort="name-desc">Name (Z-A)</button>
+      <div class="dropdown-menu" id="sort-menu" role="menu">
+        <div class="menu-items" role="none">
+          <button class="menu-item sort-item active" data-sort="date-desc" role="menuitemradio" aria-checked="true">Newest</button>
+          <button class="menu-item sort-item" data-sort="date-asc" role="menuitemradio" aria-checked="false">Oldest</button>
+          <button class="menu-item sort-item" data-sort="name-asc" role="menuitemradio" aria-checked="false">Name (A-Z)</button>
+          <button class="menu-item sort-item" data-sort="name-desc" role="menuitemradio" aria-checked="false">Name (Z-A)</button>
         </div>
       </div>
     </div>

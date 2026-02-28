@@ -2,173 +2,109 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import WorkCard from '../components/WorkCard.astro';
-import MainHead from '../components/MainHead.astro';
 import FilterBar from '../components/FilterBar.astro';
 
 const allWork = await getCollection('work');
-
-// Sort by date in descending order (newest first)
 const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
 ---
 
 <Layout>
-  <MainHead />
   <main class="container">
     <h1 class="heading">Some of my best work</h1>
-
-    <FilterBar />
-
-    <!-- Work Items Grid -->
-    <div id="work-items-grid" class="work-grid">
-      {sortedWork.map((project) => (
-        <WorkCard project={project} />
-      ))}
-    </div>
+    <work-filter data-work={JSON.stringify(sortedWork)}>
+      <FilterBar />
+      <div id="work-items-grid" class="work-grid">
+        {sortedWork.map((project) => <WorkCard project={project} />)}
+      </div>
+    </work-filter>
   </main>
 </Layout>
 
-<script is:inline define:vars={{ allWork }}>
-  const workItems = allWork;
-  const grid = document.getElementById('work-items-grid');
-  const searchInput = document.getElementById('search-input');
-  // Cache existing DOM cards so we can show/hide and reorder without re-rendering
-  const cards = Array.from(grid.querySelectorAll('.work-card'));
-  const cardMap = new Map(cards.map(c => [c.dataset.id, c]));
-  
-  // Custom Dropdown State
-  let selectedTags = [];
-  let currentSort = 'date-desc';
+<script>
+  class WorkFilter extends HTMLElement {
+    connectedCallback() {
+      const items = JSON.parse(this.dataset.work || '[]') as { id: string; data: { title: string; description: string; tags: string[]; date: string } }[];
+      const grid = this.querySelector('#work-items-grid') as HTMLElement;
+      const input = this.querySelector('#search-input') as HTMLInputElement;
+      const cards = Array.from(this.querySelectorAll('.work-card')) as HTMLElement[];
+      const cardMap = new Map(cards.map(c => [c.dataset.id, c]));
+      const tagCount = this.querySelector('#tag-count') as HTMLElement;
+      const sortLabel = this.querySelector('#sort-label') as HTMLElement;
 
-  // UI Elements
-  const tagDropdown = document.getElementById('tag-dropdown');
-  const sortDropdown = document.getElementById('sort-dropdown');
-  const tagCountDisplay = document.getElementById('tag-count');
-  const sortLabel = document.getElementById('sort-label');
+      const params = new URLSearchParams(window.location.search);
+      let tags = params.get('tags')?.split(',').filter(Boolean) || [];
+      let sort = params.get('sort') || 'date-desc';
+      input.value = params.get('search') || '';
 
-  // Toggle Dropdowns
-  function closeAllDropdowns() {
-    document.querySelectorAll('.custom-dropdown').forEach(d => {
-      d.classList.remove('open');
-      d.querySelector('.dropdown-trigger').setAttribute('aria-expanded', 'false');
-    });
-  }
+      const update = () => {
+        const p = new URLSearchParams();
+        if (tags.length) p.set('tags', tags.join(','));
+        if (sort !== 'date-desc') p.set('sort', sort);
+        if (input.value) p.set('search', input.value);
+        
+        const search = p.toString();
+        const newUrl = search ? `?${search}${location.hash}` : location.pathname + location.hash;
+        window.history.replaceState({}, '', newUrl);
 
-  document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
-    trigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const parent = trigger.parentElement;
-      const isOpen = parent.classList.contains('open');
-      closeAllDropdowns();
-      if (!isOpen) {
-        parent.classList.add('open');
-        trigger.setAttribute('aria-expanded', 'true');
-      }
-    });
-  });
+        // Sync UI state
+        this.querySelectorAll('.tag-item').forEach(el => el.classList.toggle('active', tags.includes((el as HTMLElement).dataset.tag!)));
+        if (tagCount) tagCount.textContent = tags.length ? `(${tags.length})` : '';
+        this.querySelectorAll('.sort-item').forEach(el => {
+          const active = (el as HTMLElement).dataset.sort === sort;
+          el.classList.toggle('active', active);
+          if (active && sortLabel) sortLabel.textContent = el.textContent;
+        });
 
-  document.addEventListener('click', closeAllDropdowns);
+        // Filter and Sort
+        const searchStr = input.value.toLowerCase();
+        const filtered = items
+          .filter(i => (!searchStr || [i.data.title, i.data.description, ...i.data.tags].some(s => s.toLowerCase().includes(searchStr))) && (!tags.length || tags.some(t => i.data.tags.includes(t))))
+          .sort((a, b) => {
+            const da = new Date(a.data.date).getTime(), db = new Date(b.data.date).getTime();
+            if (sort === 'date-desc') return db - da;
+            if (sort === 'date-asc') return da - db;
+            return sort === 'name-asc' ? a.data.title.localeCompare(b.data.title) : b.data.title.localeCompare(a.data.title);
+          });
 
-  // Handle Tag Selection (Multi-select)
-  document.querySelectorAll('.tag-item').forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const tag = item.dataset.tag;
-      if (selectedTags.includes(tag)) {
-        selectedTags = selectedTags.filter(t => t !== tag);
-        item.classList.remove('active');
-      } else {
-        selectedTags.push(tag);
-        item.classList.add('active');
-      }
-      
-      // Update count display
-      tagCountDisplay.textContent = selectedTags.length > 0 ? `(${selectedTags.length})` : '';
-      filterAndSortWork();
-    });
-  });
+        // Render reordered grid
+        const ids = new Set(filtered.map(i => i.id));
+        cards.forEach(c => (c.style.display = ids.has(c.dataset.id!) ? '' : 'none'));
+        filtered.forEach(i => grid?.appendChild(cardMap.get(i.id)!));
+      };
 
-  // Handle Sort Selection (Single-select)
-  document.querySelectorAll('.sort-item').forEach(item => {
-    item.addEventListener('click', (e) => {
-      const sort = item.dataset.sort;
-      currentSort = sort;
-      
-      // Update UI
-      document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      sortLabel.textContent = item.textContent;
-      
-      closeAllDropdowns();
-      filterAndSortWork();
-    });
-  });
+      this.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        const trigger = target.closest('.dropdown-trigger');
+        const tagItem = target.closest('.tag-item') as HTMLElement;
+        const sortItem = target.closest('.sort-item') as HTMLElement;
 
-  function renderWorkItems(items) {
-    const order = items.map(i => i.id);
-    const idSet = new Set(order);
+        if (trigger) {
+          const isOpen = trigger.parentElement!.classList.contains('open');
+          this.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+          trigger.parentElement!.classList.toggle('open', !isOpen);
+          e.stopPropagation();
+        } else {
+          this.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+        }
 
-    // Show/hide existing cards and set aria-hidden
-    cards.forEach(card => {
-      const id = card.dataset.id;
-      const shouldShow = idSet.has(id);
-      card.style.display = shouldShow ? '' : 'none';
-      card.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
-    });
+        if (tagItem) {
+          const t = tagItem.dataset.tag!;
+          tags = tags.includes(t) ? tags.filter(x => x !== t) : [...tags, t];
+          update();
+          e.stopPropagation();
+        }
 
-    // Reorder visible cards to match filtered order (appendChild moves existing nodes)
-    order.forEach(id => {
-      const card = cardMap.get(id);
-      if (card) grid.appendChild(card);
-    });
+        if (sortItem) {
+          sort = sortItem.dataset.sort!;
+          update();
+        }
+      });
 
-    // If focus was inside a now-hidden card, move focus to the search input
-    const activeCard = document.activeElement && document.activeElement.closest && document.activeElement.closest('.work-card');
-    if (activeCard && activeCard.getAttribute('aria-hidden') === 'true') {
-      searchInput.focus();
+      input.addEventListener('input', update);
+      update();
     }
   }
-
-  function filterAndSortWork() {
-    let filtered = [...workItems];
-
-    // Filter by search input
-    const searchTerm = searchInput.value.toLowerCase();
-    if (searchTerm) {
-      filtered = filtered.filter(item =>
-        item.data.title.toLowerCase().includes(searchTerm) ||
-        item.data.description.toLowerCase().includes(searchTerm) ||
-        item.data.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-      );
-    }
-
-    // Filter by tag (Multi-select)
-    if (selectedTags.length > 0) {
-      filtered = filtered.filter(item => 
-        selectedTags.some(tag => item.data.tags.includes(tag))
-      );
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-      if (currentSort === 'date-desc') {
-        return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
-      } else if (currentSort === 'date-asc') {
-        return new Date(a.data.date).getTime() - new Date(b.data.date).getTime();
-      } else if (currentSort === 'name-asc') {
-        return a.data.title.localeCompare(b.data.title);
-      } else if (currentSort === 'name-desc') {
-        return b.data.title.localeCompare(a.data.title);
-      }
-      return 0;
-    });
-
-    renderWorkItems(filtered);
-  }
-
-  searchInput.addEventListener('input', filterAndSortWork);
-  // Initial order enforcement / accessibility
-  filterAndSortWork();
+  customElements.define('work-filter', WorkFilter);
 </script>
 
 <style>
@@ -178,7 +114,6 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
     margin-right: auto;
     padding: 0.5rem 1rem 1rem 1rem;
   }
-
   .heading {
     font-size: var(--text-xl);
     margin-bottom: 2rem;
@@ -186,31 +121,20 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
     text-align: center;
     color: var(--gray-0);
   }
-
-  /* Work Grid Styles */
   .work-grid {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
     gap: 1.5rem;
   }
-
   @media (min-width: 768px) {
     .work-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 2.5rem;
     }
-    .heading {
-      font-size: var(--text-2xl);
-      margin-bottom: 3rem;
-    }
-    .container {
-      padding: 1rem 1rem;
-    }
+    .heading { font-size: var(--text-2xl); margin-bottom: 3rem; }
+    .container { padding: 1rem 1rem; }
   }
-
   @media (min-width: 1024px) {
-    .work-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+    .work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 </style>
