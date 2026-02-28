@@ -1,10 +1,11 @@
 ---
+import { Image } from 'astro:assets';
 import background from '../assets/background.svg';
 import TypeWriter from './TypeWriter.astro';
 ---
 
 <div id="container">
-	<img id="background" src={background.src} alt="" fetchpriority="high" />
+	<Image id="background" src={background} alt="" fetchpriority="high" />
 	<TypeWriter/>
 </div>
 
