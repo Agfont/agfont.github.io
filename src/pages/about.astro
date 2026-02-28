@@ -83,7 +83,7 @@ import profilePicture from '../assets/me.jpeg';
   <style>
     .about-page {
       max-width: 900px;
-      margin: 2rem auto;
+      margin: 0 auto;
       padding: 0 1rem;
       line-height: 1.6;
     }
@@ -92,7 +92,7 @@ import profilePicture from '../assets/me.jpeg';
       flex-direction: column;
       align-items: center;
       gap: 1rem;
-      margin: 1rem 1rem;
+      margin: 1rem 0;
     }
     /* Don't crop the image: keep aspect ratio and show whole image */
     .avatar {
@@ -120,7 +120,7 @@ import profilePicture from '../assets/me.jpeg';
     /* Section spacing */
     section { 
         margin: 0; 
-        padding: 2rem; 
+        padding: 1.5rem; 
         border-radius: 25px;
     }
 
@@ -139,7 +139,9 @@ import profilePicture from '../assets/me.jpeg';
     a { color: var(--link-color); }
 
     @media (min-width: 640px) {
-      .about-hero { flex-direction: row;  }
+      .about-hero { flex-direction: row; margin: 2rem 0;}
+      .about-page { padding: 0 0; margin: 2rem auto;}
     }
+
   </style>
 </Layout>
