@@ -1,25 +1,12 @@
 ---
-import { Image } from 'astro:assets';
-import background from '../assets/background.svg';
 import TypeWriter from './TypeWriter.astro';
 ---
 
 <div id="container">
-	<Image id="background" src={background} alt="" fetchpriority="high" />
 	<TypeWriter/>
 </div>
 
 <style>
-	#background {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: -1;
-		filter: blur(100px);
-	}
-
 	#container {
 		height: 100%;
 		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
