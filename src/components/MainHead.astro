@@ -23,14 +23,14 @@ const {
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:type" content="website" />
-<meta property="og:image" content={new URL('logo.png', Astro.url)} />
+<meta property="og:image" content={Astro.url + 'logo.png'} />
 <meta property="og:url" content={Astro.url} />
 
 <!--- Twitter tags -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={new URL('logo.png', Astro.url)} />
+<meta name="twitter:image" content={Astro.url + 'logo.png'} />
 
 <script is:inline>
 	// This code is inlined in the head to make dark mode instant & blocking.
