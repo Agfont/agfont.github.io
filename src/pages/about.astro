@@ -12,45 +12,71 @@ import profilePicture from '../assets/me.jpeg';
         <h1>Hi, I'm Arthur</h1>
         <p class="lead">I am a software engineer currently pursuing a Master's degree in Computer Science at the University of Bologna, Italy.</p>
         <p class="lead">Born in Brazil and a proud Spanish citizen, I enjoy working in international environments. Beyond tech, my life is all about travel and sports, so there's a good chance you'll catch me out surfing or playing footvolley.</p>
-        <p class="lead">I am always eager to connect, collaborate on exciting tech projects, and explore career opportunities across Europe.</p>
+        <p class="lead">I am always eager to connect, collaborate on exciting tech projects, and explore career opportunities.</p>
       </div>
     </header>
 
     <section>
       <h2>Experience</h2>
-      <ul>
-        <li><strong>Job Title</strong> — Company (Year–Year). Brief description of role and responsibilities.</li>
-      </ul>
+      <div class="items">
+        <div class="item">
+          <p class="period">Dec 2024 - Oct 2025</p>
+          <p><strong>Software Engineer Manager</strong> - Cubbo</p>
+        </div>
+        <div class="item">
+          <p class="period">Nov 2022 - Oct 2025</p>
+          <p><strong>Full Stack Engineer</strong> - Cubbo</p>
+        </div>
+        <div class="item">
+          <p class="period">Oct 2021 - Feb 2022</p>
+          <p><strong>Salesforce B2C Commerce Developer</strong> - Capgemini</p>
+        </div>
+        <div class="item">
+          <p class="period">Sep 2019 - Jul 2020</p>
+          <p><strong>Collaborative Scholarship in Information Technology</strong> - University of Barcelona</p>
+        </div>
+      </div>
     </section>
 
     <section>
       <h2>Education</h2>
-      <ul>
-        <li><strong>Degree</strong>, Institution — Year. Short note about focus or honours.</li>
-      </ul>
+      <div class="items">
+        <div class="item">
+          <p class="period">2025 - Present</p>
+          <p><strong>Master's in Computer Science (Distributed Systems and Networks)</strong> - University of Bologna</p>
+        </div>
+        <div class="item">
+          <p class="period">2018 - 2022</p>
+          <p><strong>Bachelor's in Computer Engineering</strong> - University of Barcelona</p>
+        </div>
+      </div>
     </section>
 
     <section>
       <h2>Languages</h2>
       <ul>
-        <li>English — Native</li>
-        <li>Other language — Proficiency level</li>
+        <li>Portuguese - Native (C2)</li>
+        <li>Spanish - Proficient (C2)</li>
+        <li>English — Advanced (C1)</li>
+        <li>Catalan — Advanced (C1)</li>
+        <li>Italian — Upper-intermediate (B2)</li>
       </ul>
     </section>
 
     <section>
       <h2>Citizenship</h2>
-      <p>Country / Countries of citizenship.</p>
+      <p>Spanish / Brazilian citizen</p>
     </section>
 
     <section>
-      <h2>Interests</h2>
-      <p>List a few interests or hobbies (e.g., Photography, Hiking, Open source).</p>
+      <h2>Hobbies</h2>
+      <p>Surfing, footvolley, soccer and traveling</p>
     </section>
 
     <section>
       <h2>Contact me</h2>
-      <p>If you'd like to get in touch, email me at <a href="mailto:you@example.com">you@example.com</a> or use the contact form on this site.</p>
+        <p>Email: <a href="mailto:arthurfont2000@gmail.com">arthurfont2000@gmail.com</a></p>
+        <p>Phone: <a href="tel:+393520180722">+39 352 018 0722</a></p>      
     </section>
   </article>
 
@@ -86,8 +112,14 @@ import profilePicture from '../assets/me.jpeg';
         margin-bottom: 1rem;
         font-size: var(--text-3xl);
     }
+
+    .period { font-size: var(--text-sm); color: var(--gray-400); line-height: 1rem;} 
     
-    .lead { margin: 1rem 0; color: var(--gray-600); }
+    .item {
+        margin-bottom: 0.5rem;
+    }
+
+    .lead { margin: 1rem 0; }
 
     /* Section spacing */
     section { 
@@ -102,8 +134,9 @@ import profilePicture from '../assets/me.jpeg';
     }
 
     ul { margin: 0; padding-left: 1.25rem; }
+    li { margin: 2px 0; }
 
-    section:nth-of-type(even) {
+    section:nth-of-type(odd) {
       background: var(--gray-900);
     }
 
