@@ -1,0 +1,117 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from 'astro:assets';
+import profilePicture from '../assets/me.jpeg';
+---
+
+<Layout>
+  <article class="about-page">
+    <header class="about-hero">
+      <Image src={profilePicture} alt="Your photo" class="avatar" />
+      <div class="hero-text">
+        <h1>Hi, I'm Arthur</h1>
+        <p class="lead">I am a software engineer currently pursuing a Master's degree in Computer Science at the University of Bologna, Italy.</p>
+        <p class="lead">Born in Brazil and a proud Spanish citizen, I enjoy working in international environments. Beyond tech, my life is all about travel and sports, so there's a good chance you'll catch me out surfing or playing footvolley.</p>
+        <p class="lead">I am always eager to connect, collaborate on exciting tech projects, and explore career opportunities across Europe.</p>
+      </div>
+    </header>
+
+    <section>
+      <h2>Experience</h2>
+      <ul>
+        <li><strong>Job Title</strong> — Company (Year–Year). Brief description of role and responsibilities.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <ul>
+        <li><strong>Degree</strong>, Institution — Year. Short note about focus or honours.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Languages</h2>
+      <ul>
+        <li>English — Native</li>
+        <li>Other language — Proficiency level</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Citizenship</h2>
+      <p>Country / Countries of citizenship.</p>
+    </section>
+
+    <section>
+      <h2>Interests</h2>
+      <p>List a few interests or hobbies (e.g., Photography, Hiking, Open source).</p>
+    </section>
+
+    <section>
+      <h2>Contact me</h2>
+      <p>If you'd like to get in touch, email me at <a href="mailto:you@example.com">you@example.com</a> or use the contact form on this site.</p>
+    </section>
+  </article>
+
+  <style>
+    .about-page {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+    }
+    .about-hero {
+      display: flex;
+      gap: 1rem;
+      align-items: stretch;
+      margin: 1rem 1rem;
+    }
+    /* Don't crop the image: keep aspect ratio and show whole image */
+    .avatar {
+      width: 240px;
+      object-fit: contain;
+      flex-shrink: 0;
+      display: block;
+      border-radius: 25px;
+    }
+
+    .hero-text {
+      background-color: var(--gray-900);
+      padding: 2rem 1.5rem;
+      border-radius: 25px;
+    }
+
+    h1 { 
+        margin-bottom: 1rem;
+        font-size: var(--text-3xl);
+    }
+    
+    .lead { margin: 1rem 0; color: var(--gray-600); }
+
+    /* Section spacing */
+    section { 
+        margin: 0; 
+        padding: 2rem; 
+        border-radius: 25px;
+    }
+
+    section h2 { 
+        margin: 0 0 0.5rem 0; 
+        font-size: var(--text-2xl);
+    }
+
+    ul { margin: 0; padding-left: 1.25rem; }
+
+    section:nth-of-type(even) {
+      background: var(--gray-900);
+    }
+
+    a { color: var(--link-color); }
+
+    @media (max-width: 640px) {
+      .about-hero { flex-direction: column; align-items: flex-start; }
+      .avatar { width: 120px; max-height: 160px; }
+    }
+  </style>
+</Layout>
