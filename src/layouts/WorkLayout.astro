@@ -27,7 +27,9 @@ const { work } = Astro.props;
 			<aside class="metadata">
 				<section>
 					<h4>Field</h4>
-					<div class="pill-tag">{work.data.field}</div>
+					<div class="field-list">
+						{work.data.field.map(f => <div class="pill-tag">{f}</div>)}
+					</div>
 				</section>
 
 				<section>
@@ -86,10 +88,16 @@ const { work } = Astro.props;
 		margin-bottom: 0.75rem;
 	}
 
+	.field-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
 	.pill-tag {
 		display: inline-block;
 		padding: 0.25rem 0.75rem;
-		background-color: var(--accent-overlay);
+		background-color: var(--gray-900);
 		color: var(--accent-light);
 		border-radius: 999px;
 		font-size: var(--text-sm);
@@ -116,6 +124,9 @@ const { work } = Astro.props;
 		color: var(--accent-light);
 		text-decoration: underline;
 		text-underline-offset: 4px;
+	}
+	.work-link:hover {
+		color: var(--accent-dark);
 	}
 
 	.content {

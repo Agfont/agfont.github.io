@@ -127,6 +127,10 @@ img {
 	width: auto;
 }
 
+p {
+	margin-bottom: 1.5rem;
+}
+
 a {
 	color: var(--link-color);
 }
