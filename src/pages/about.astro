@@ -11,7 +11,7 @@ import cv from '../assets/ArthurFontCV.pdf';
       <Image src={profilePicture} alt="Your photo" class="avatar" />
       <div class="hero-text">
         <h1>Hi, I'm Arthur</h1>
-        <p class="lead">I am a software engineer currently pursuing a Master's degree in Computer Science at the University of Bologna, Italy.</p>
+        <p class="lead">I am a Software Engineer currently pursuing a Master's degree in Computer Science at the University of Bologna. I hold a Bachelor's degree in Computer Engineering from the University of Barcelona and speak English, Spanish, Portuguese, Catalan, and Italian.</p>
         <p class="lead">Born in Brazil and a Spanish citizen, I enjoy working in international environments. Beyond tech, my life is all about travel and sports, so there's a good chance you'll catch me out surfing or playing footvolley.</p>
         <p class="lead">I am always eager to connect, collaborate on exciting tech projects, and explore career opportunities.</p>
         <p>Curriculum Vitae: <a href={cv} target="_blank">PDF</a></p>
@@ -103,7 +103,7 @@ import cv from '../assets/ArthurFontCV.pdf';
 
     .hero-text {
       background-color: var(--gray-900);
-      padding: 1.5rem 1.5rem;
+      padding: 1rem 1.5rem;
       border-radius: 25px;
     }
 
@@ -126,8 +126,9 @@ import cv from '../assets/ArthurFontCV.pdf';
     /* Section spacing */
     section { 
         margin: 0; 
-        padding: 1.5rem; 
+        padding: 1rem 1.5rem; 
         border-radius: 25px;
+        margin: 1rem 0;
     }
 
     section h2 { 
@@ -138,15 +139,15 @@ import cv from '../assets/ArthurFontCV.pdf';
     ul { margin: 0; padding-left: 1.25rem; }
     li { margin: 2px 0; }
 
-    section:nth-of-type(odd) {
+    section {
       background: var(--gray-900);
     }
 
     a { color: var(--link-color); }
 
     @media (min-width: 640px) {
-      .about-hero { flex-direction: row; margin: 2rem 0;}
-      .about-page { padding: 0 0; margin: 2rem auto;}
+      .about-hero { flex-direction: row;}
+      .about-page { padding: 0 0; margin: 1rem auto;}
     }
 
   </style>
