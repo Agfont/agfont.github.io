@@ -23,22 +23,25 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
 <script>
   class WorkFilter extends HTMLElement {
     connectedCallback() {
-      const items = JSON.parse(this.dataset.work || '[]') as { id: string; data: { title: string; description: string; tags: string[]; date: string } }[];
+      const items = JSON.parse(this.dataset.work || '[]') as { id: string; data: { title: string; description: string; tags?: string[]; technologies?: string[]; date: string } }[];
       const grid = this.querySelector('#work-items-grid') as HTMLElement;
       const input = this.querySelector('#search-input') as HTMLInputElement;
       const cards = Array.from(this.querySelectorAll('.work-card')) as HTMLElement[];
       const cardMap = new Map(cards.map(c => [c.dataset.id, c]));
       const tagCount = this.querySelector('#tag-count') as HTMLElement;
+      const techCount = this.querySelector('#tech-count') as HTMLElement;
       const sortLabel = this.querySelector('#sort-label') as HTMLElement;
 
       const params = new URLSearchParams(window.location.search);
       let tags = params.get('tags')?.split(',').filter(Boolean) || [];
+      let techs = params.get('tech')?.split(',').filter(Boolean) || [];
       let sort = params.get('sort') || 'date-desc';
       input.value = params.get('search') || '';
 
       const update = () => {
         const p = new URLSearchParams();
         if (tags.length) p.set('tags', tags.join(','));
+        if (techs.length) p.set('tech', techs.join(','));
         if (sort !== 'date-desc') p.set('sort', sort);
         if (input.value) p.set('search', input.value);
         
@@ -48,7 +51,9 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
 
         // Sync UI state
         this.querySelectorAll('.tag-item').forEach(el => el.classList.toggle('active', tags.includes((el as HTMLElement).dataset.tag!)));
+        this.querySelectorAll('.tech-item').forEach(el => el.classList.toggle('active', techs.includes((el as HTMLElement).dataset.tech!)));
         if (tagCount) tagCount.textContent = tags.length ? `(${tags.length})` : '';
+        if (techCount) techCount.textContent = techs.length ? `(${techs.length})` : '';
         this.querySelectorAll('.sort-item').forEach(el => {
           const active = (el as HTMLElement).dataset.sort === sort;
           el.classList.toggle('active', active);
@@ -58,7 +63,13 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
         // Filter and Sort
         const searchStr = input.value.toLowerCase();
         const filtered = items
-          .filter(i => (!searchStr || [i.data.title, i.data.description, ...i.data.tags].some(s => s.toLowerCase().includes(searchStr))) && (!tags.length || tags.some(t => i.data.tags.includes(t))))
+          .filter(i => {
+            const hay = [i.data.title, i.data.description, ...(i.data.tags || []), ...(i.data.technologies || [])].filter(Boolean).map(x => String(x).toLowerCase());
+            const matchesSearch = !searchStr || hay.some(s => s.includes(searchStr));
+            const matchesTags = !tags.length || tags.some(t => (i.data.tags || []).includes(t));
+            const matchesTech = !techs.length || techs.some(t => (i.data.technologies || []).includes(t));
+            return matchesSearch && matchesTags && matchesTech;
+          })
           .sort((a, b) => {
             const da = new Date(a.data.date).getTime(), db = new Date(b.data.date).getTime();
             if (sort === 'date-desc') return db - da;
@@ -75,6 +86,7 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
       this.addEventListener('click', (e) => {
         const target = e.target as HTMLElement;
         const trigger = target.closest('.dropdown-trigger');
+        const dropdown = target.closest('.custom-dropdown');
         const tagItem = target.closest('.tag-item') as HTMLElement;
         const sortItem = target.closest('.sort-item') as HTMLElement;
 
@@ -83,13 +95,22 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
           this.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
           trigger.parentElement!.classList.toggle('open', !isOpen);
           e.stopPropagation();
-        } else {
+        } else if (!dropdown) {
+          // Click happened outside any dropdown — close all dropdowns
           this.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
         }
 
         if (tagItem) {
           const t = tagItem.dataset.tag!;
           tags = tags.includes(t) ? tags.filter(x => x !== t) : [...tags, t];
+          update();
+          e.stopPropagation();
+        }
+
+        const techItem = target.closest('.tech-item') as HTMLElement;
+        if (techItem) {
+          const t = techItem.dataset.tech!;
+          techs = techs.includes(t) ? techs.filter(x => x !== t) : [...techs, t];
           update();
           e.stopPropagation();
         }
@@ -102,6 +123,19 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
 
       input.addEventListener('input', update);
       update();
+
+      // Close dropdowns when clicking outside this component
+      (this as any)._outsideClickHandler = (e: Event) => {
+        const target = e.target as Node;
+        if (!this.contains(target)) {
+          this.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+        }
+      };
+      document.addEventListener('click', (this as any)._outsideClickHandler);
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener('click', (this as any)._outsideClickHandler);
     }
   }
   customElements.define('work-filter', WorkFilter);
