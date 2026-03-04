@@ -16,6 +16,11 @@ const { project } = Astro.props;
       <span class="tag">{tag}</span>
     ))}
   </div>
+  <div class="tags">
+    {project.data.technologies?.map(tech => (
+      <span class="tag tech">{tech}</span>
+    ))}
+  </div>
 </a>
 
 <style>
@@ -31,6 +36,7 @@ const { project } = Astro.props;
     /* Reset anchor default link styles so children don't appear underlined */
     text-decoration: none;
     color: inherit;
+    gap: 0.5rem;
   }
 
   .work-card:hover {
@@ -47,13 +53,12 @@ const { project } = Astro.props;
   .work-card .title {
     font-size: var(--text-lg);
     font-weight: 700;
-    margin-bottom: 0.5rem;
     color: var(--gray-0);
   }
 
   .work-card .description {
     color: var(--gray-300);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     font-size: var(--text-sm);
     flex-grow: 1;
   }
@@ -72,6 +77,11 @@ const { project } = Astro.props;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
   }
+
+   .work-card .tech {
+    background-color: #059080;
+    color: #ffffff;
+   }
 
   .theme-dark .work-card .tag {
     background-color: var(--gray-700);
