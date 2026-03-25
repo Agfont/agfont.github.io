@@ -9,7 +9,7 @@ technologies:
   Frontend: ['Astro']
   'Web Framework': ['Flask']
   Databases: ['ChromaDB']
-  DevOps: ['AWS', 'Terraform']
+  DevOps: ['AWS', 'GitHub Actions', 'Terraform']
   AI: ['OpenAI', 'LangChain', 'LangGraph', 'MCP']
 link: 'https://ai-lab-tutorial.netlify.app/'
 ---
