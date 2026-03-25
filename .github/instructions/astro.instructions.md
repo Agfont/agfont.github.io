@@ -60,11 +60,15 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/*.md', base: './src/content' }),
   schema: z.object({
     title: z.string(),
-    pubDate: z.date(),
-    tags: z.array(z.string()).optional()
+    description: z.string(),
+    fields: z.array(z.string()).default([]),
+    technologies: z.record(z.string(), z.array(z.string())).default({}),
+    link: z.string().url().optional(),
+    industries: z.array(z.string()).default([]),
+    date: z.coerce.date()
   })
 });
 ```
