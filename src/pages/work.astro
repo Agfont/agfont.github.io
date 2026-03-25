@@ -23,7 +23,7 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
 <script>
   class WorkFilter extends HTMLElement {
     connectedCallback() {
-      const items = JSON.parse(this.dataset.work || '[]') as { id: string; data: { title: string; description: string; tags?: string[]; technologies?: string[]; date: string } }[];
+      const items = JSON.parse(this.dataset.work || '[]') as { id: string; data: { title: string; description: string; fields?: string[]; technologies?: Record<string, string[]>; date: string } }[];
       const grid = this.querySelector('#work-items-grid') as HTMLElement;
       const input = this.querySelector('#search-input') as HTMLInputElement;
       const cards = Array.from(this.querySelectorAll('.work-card')) as HTMLElement[];
@@ -37,6 +37,9 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
       let techs = params.get('tech')?.split(',').filter(Boolean) || [];
       let sort = params.get('sort') || 'date-desc';
       input.value = params.get('search') || '';
+
+      const flattenTechnologies = (technologies?: Record<string, string[]>) =>
+        Object.values(technologies || {}).flat();
 
       const update = () => {
         const p = new URLSearchParams();
@@ -64,10 +67,11 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
         const searchStr = input.value.toLowerCase();
         const filtered = items
           .filter(i => {
-            const hay = [i.data.title, i.data.description, ...(i.data.tags || []), ...(i.data.technologies || [])].filter(Boolean).map(x => String(x).toLowerCase());
+            const technologies = flattenTechnologies(i.data.technologies);
+            const hay = [i.data.title, i.data.description, ...(i.data.fields || []), ...technologies].filter(Boolean).map(x => String(x).toLowerCase());
             const matchesSearch = !searchStr || hay.some(s => s.includes(searchStr));
-            const matchesTags = !tags.length || tags.some(t => (i.data.tags || []).includes(t));
-            const matchesTech = !techs.length || techs.some(t => (i.data.technologies || []).includes(t));
+            const matchesTags = !tags.length || tags.some(t => (i.data.fields || []).includes(t));
+            const matchesTech = !techs.length || techs.some(t => technologies.includes(t));
             return matchesSearch && matchesTags && matchesTech;
           })
           .sort((a, b) => {

@@ -1,9 +1,13 @@
 ---
+import { TECHNOLOGY_GROUPS, getTechnologyColor } from '../utils/technologies';
+
 interface Props {
-  allTags?: string[];
-  allTechnologies?: string[];
+  allFields?: string[];
+  allTechnologies?: Record<string, string[]>;
 }
-const { allTags = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', 'Robotics', 'Web Development'], allTechnologies = ['React', 'TypeScript', 'Node.js', 'Ruby on Rails', 'PostgreSQL', 'AWS', 'Docker', 'Kubernetes'] } = Astro.props;
+const { 
+  allFields = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', 'Robotics', 'Web Development'], 
+  allTechnologies = TECHNOLOGY_GROUPS } = Astro.props;
 ---
 
 <div class="filter-sort-section">
@@ -30,7 +34,7 @@ const { allTags = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', '
       </button>
       <div class="dropdown-menu" id="tag-menu" role="menu">
         <div class="menu-items" role="none">
-          {allTags.map(tag => (
+          {allFields.map(tag => (
             <button class="menu-item tag-item" data-tag={tag} role="menuitemcheckbox" aria-checked="false">
               <span class="checkbox" aria-hidden="true"></span>
               {tag}
@@ -50,12 +54,18 @@ const { allTags = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', '
         </svg>
       </button>
       <div class="dropdown-menu" id="tech-menu" role="menu">
-        <div class="menu-items" role="none">
-          {allTechnologies.map(tech => (
-            <button class="menu-item tech-item" data-tech={tech} role="menuitemcheckbox" aria-checked="false">
-              <span class="checkbox" aria-hidden="true"></span>
-              {tech}
-            </button>
+        <div class="menu-items tech-menu-items" role="none">
+          {Object.entries(allTechnologies).map(([group, techs]) => (
+            <div class="tech-group" role="none">
+              <p class="tech-group-label">{group}</p>
+              {techs.map((tech) => (
+                <button class="menu-item tech-item" data-tech={tech} role="menuitemcheckbox" aria-checked="false">
+                  <span class="tech-color" style={`--tech-color: ${getTechnologyColor(tech)}`}></span>
+                  <span class="checkbox" aria-hidden="true"></span>
+                  {tech}
+                </button>
+              ))}
+            </div>
           ))}
         </div>
       </div>
@@ -210,6 +220,37 @@ const { allTags = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', '
 
   .menu-items {
     padding: 0.25rem 0;
+  }
+
+  .tech-menu-items {
+    max-height: 20rem;
+    overflow-y: auto;
+  }
+
+  .tech-group {
+    padding: 0.25rem 0;
+  }
+
+  .tech-group:not(:first-child) {
+    border-top: 1px solid var(--gray-800);
+  }
+
+  .tech-group-label {
+    margin: 0;
+    padding: 0.35rem 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--gray-500);
+  }
+
+  .tech-color {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 9999px;
+    background-color: var(--tech-color);
+    flex-shrink: 0;
   }
 
   .menu-item {

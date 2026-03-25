@@ -6,10 +6,10 @@ const work = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    field: z.array(z.string()).default([]),
-    technologies: z.array(z.string()).default([]),
+    fields: z.array(z.string()).default([]),
+    technologies: z.record(z.string(), z.array(z.string())).default({}),
     link: z.string().url().optional(),
-    tags: z.array(z.string()).default([]),
+    industries: z.array(z.string()).default([]),
     date: z.coerce.date()
   }),
 });

@@ -1,24 +1,26 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getTechnologyColor } from '../utils/technologies';
 
 interface Props {
   project: CollectionEntry<'work'>;
 }
 
 const { project } = Astro.props;
+const technologies = Object.values(project.data.technologies || {}).flat();
 ---
 
 <a class="work-card" href={`/work/${project.id}`} data-id={project.id}>
   <h3 class="title">{project.data.title}</h3>
   <p class="description">{project.data.description}</p>
   <div class="tags">
-    {project.data.tags.map(tag => (
+    {project.data.fields.map(tag => (
       <span class="tag">{tag}</span>
     ))}
   </div>
   <div class="tags">
-    {project.data.technologies?.map(tech => (
-      <span class="tag tech">{tech}</span>
+    {technologies.map(tech => (
+      <span class="tag tech" style={`--tech-bg: ${getTechnologyColor(tech)}`}>{tech}</span>
     ))}
   </div>
 </a>
@@ -78,10 +80,10 @@ const { project } = Astro.props;
     border-radius: 9999px;
   }
 
-   .work-card .tech {
-    background-color: #059080;
+  .work-card .tech {
     color: #ffffff;
-   }
+    background-color: color-mix(in srgb, var(--tech-bg) 80%, var(--gray-600));
+  }
 
   .theme-dark .work-card .tag {
     background-color: var(--gray-700);

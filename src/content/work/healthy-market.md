@@ -1,10 +1,14 @@
 ---
 title: 'Healthy Market'
 date: '2024-05-01'
-tags: ["Web Development"]
+fields: ["Web Development"]
 description: 'Custom headless Shopify e-commerce store for organic food.'
-field: ['E-commerce']
-technologies: ['Shopify', 'Next.js', 'Tailwind CSS', 'GraphQL', 'React', 'Node.js']
+industries: ['E-commerce']
+technologies:
+  Language: ['JS/TS']
+  'Web Framework': ['Next.js']
+  APIs: ['GraphQL', 'Shopify']
+  Frontend: ['React', 'Tailwind CSS']
 link: 'https://www.healthymarketbr.com/'
 ---
 

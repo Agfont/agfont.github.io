@@ -13,6 +13,7 @@ type Props = {
 };
 
 const { work } = Astro.props;
+const technologies = Object.values(work.data.technologies || {}).flat();
 ---
 
 <!doctype html>
@@ -28,14 +29,14 @@ const { work } = Astro.props;
 				<section>
 					<h4>Field</h4>
 					<div class="field-list">
-						{work.data.field.map(f => <div class="pill-tag">{f}</div>)}
+						{work.data.fields.map(f => <div class="pill-tag">{f}</div>)}
 					</div>
 				</section>
 
 				<section>
 					<h4>Technologies</h4>
 					<div class="tech-list">
-						{work.data.technologies.map(tech => <span class="pill-text">{tech}</span>)}
+						{technologies.map(tech => <span class="pill-text">{tech}</span>)}
 					</div>
 				</section>
 
@@ -69,15 +70,12 @@ const { work } = Astro.props;
 		grid-template-columns: 1fr;
 		gap: 3rem;
 		width: 100%;
-        flex-grow: 1;
 	}
 
 	.metadata {
 		display: flex;
 		flex-direction: column;
 		gap: 2rem;
-		padding-bottom: 2rem;
-		border-bottom: 1px solid var(--gray-800);
 	}
 
 	.metadata section h4 {
@@ -139,6 +137,7 @@ const { work } = Astro.props;
 			gap: 5rem;
             padding: 2rem 1rem;
             max-width: 1200px;
+			flex-grow: 1;
 		}
 
 		.metadata {
@@ -146,7 +145,6 @@ const { work } = Astro.props;
 			top: 2rem;
 			height: fit-content;
 			border-bottom: none;
-			padding-bottom: 0;
 		}
 	}
 </style>

@@ -1,10 +1,16 @@
 ---
 title: 'Cubbo Tracking System'
 date: '2023-07-01'
-tags: ["Web Development"]
+fields: ["Web Development"]
 description: 'Designed and delivered an end-to-end shipment tracking page that serves around 500K+ users annually.'
-field: ['Logistics', 'WMS', 'TMS', 'E-commerce']
-technologies: ['Ruby on Rails', 'React', 'PostgreSQL', 'AWS', 'External APIs']
+industries: ['Logistics', 'WMS', 'TMS', 'E-commerce']
+technologies:
+  Language: ['Ruby']
+  'Web Framework': ['Rails']
+  APIs: ['Tracking APIs']
+  Frontend: ['React']
+  Databases: ['PostgreSQL']
+  DevOps: ['AWS']
 link: 'https://tracking.cubbo.com/'
 ---
 
