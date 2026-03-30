@@ -16,7 +16,7 @@ link: 'https://ai-lab-tutorial.netlify.app/'
 
 ## AI Fundamentals Tutorial
 
-I built AI Fundamentals Tutorial as a practical learning platform to help developers understand modern AI agent workflows through guided labs.
+AI Fundamentals Tutorial is a practical learning platform to help developers understand modern AI agent workflows through guided labs.
 
 The tutorial is organized into progressive modules, including AI fundamentals, LangChain, prompt engineering, vector databases and semantic search, RAG pipelines, LangGraph stateful workflows, and advanced MCP concepts. Each lab contains executable tasks exposed through Flask REST endpoints, so learners can run each step and inspect behavior from a single interface.
 
