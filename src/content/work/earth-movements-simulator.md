@@ -8,7 +8,7 @@ technologies:
   Language: ['JavaScript']
   APIs: ['WebGL']
   Frontend: ['HTML', 'CSS']
-link: ''
+link: 'https://agfont.github.io/cg/'
 ---
 
 ## Earth Movements Simulator
