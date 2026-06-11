@@ -5,7 +5,7 @@ fields: ["Web Development"]
 description: 'Interactive 3D web application simulating Earth rotation and revolution.'
 industries: ['Education']
 technologies:
-  Language: ['JavaScript']
+  Language: ['JS/TS']
   APIs: ['WebGL']
   Frontend: ['HTML', 'CSS']
 link: 'https://agfont.github.io/cg/'

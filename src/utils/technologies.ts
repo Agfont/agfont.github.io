@@ -2,7 +2,7 @@ export const TECHNOLOGY_GROUPS: Record<string, string[]> = {
   Language: ['JS/TS', 'Python', 'Ruby'],
   'Web Framework': ['Flask', 'Next.js', 'Rails',],
   APIs: ['Shopify', 'GraphQL', 'Tracking APIs', 'WebGL'],
-  Frontend: ['Astro', 'React', 'Tailwind CSS'],
+  Frontend: ['Astro', 'CSS', 'HTML', 'React', 'Tailwind CSS'],
   Databases: ['ChromaDB', 'PostgreSQL'],
   DevOps: ['AWS', 'Docker', 'GitHub Actions', 'Kubernetes', 'Terraform'],
   'AI & ML': ['LangChain', 'LangGraph', 'MCP', 'OpenAI', 'PyTorch', 'Scikit-learn'],
