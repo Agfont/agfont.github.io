@@ -9,6 +9,7 @@ technologies:
   'AI & ML': ['PyTorch']
   'Data Science': ['Scikit-learn', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn']
 link: 'https://diposit.ub.edu/items/58183aec-3054-4f90-9bd4-620365d9bd04'
+order: 4
 ---
 
 ## AI in Healthcare

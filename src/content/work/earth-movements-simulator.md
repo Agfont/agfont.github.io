@@ -9,6 +9,7 @@ technologies:
   APIs: ['WebGL']
   Frontend: ['HTML', 'CSS']
 link: 'https://agfont.github.io/cg/'
+order: 5
 ---
 
 ## Earth Movements Simulator

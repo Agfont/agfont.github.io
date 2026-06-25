@@ -10,6 +10,7 @@ technologies:
   APIs: ['GraphQL', 'Shopify']
   Frontend: ['React', 'Tailwind CSS']
 link: 'https://www.healthymarketbr.com/'
+order: 3
 ---
 
 ## Healthy Market E-commerce Store

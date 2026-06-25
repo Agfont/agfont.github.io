@@ -4,8 +4,20 @@ import Layout from '../layouts/Layout.astro';
 import WorkCard from '../components/WorkCard.astro';
 import FilterBar from '../components/FilterBar.astro';
 
-const allWork = await getCollection('work');
-const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+type WorkEntry = {
+  id: string;
+  data: {
+    title: string;
+    description: string;
+    fields?: string[];
+    technologies?: Record<string, string[]>;
+    date: Date;
+    order?: number;
+  };
+};
+
+const allWork = (await getCollection('work')) as WorkEntry[];
+const sortedWork = allWork.sort((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER) || b.data.date.getTime() - a.data.date.getTime());
 ---
 
 <Layout>
@@ -14,7 +26,7 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
     <work-filter data-work={JSON.stringify(sortedWork)}>
       <FilterBar />
       <div id="work-items-grid" class="work-grid">
-        {sortedWork.map((project) => <WorkCard project={project} />)}
+        {sortedWork.map((project: WorkEntry) => <WorkCard project={project} />)}
       </div>
     </work-filter>
   </main>
@@ -23,7 +35,7 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
 <script>
   class WorkFilter extends HTMLElement {
     connectedCallback() {
-      const items = JSON.parse(this.dataset.work || '[]') as { id: string; data: { title: string; description: string; fields?: string[]; technologies?: Record<string, string[]>; date: string } }[];
+      const items = JSON.parse(this.dataset.work || '[]') as { id: string; data: { title: string; description: string; fields?: string[]; technologies?: Record<string, string[]>; date: string; order?: number } }[];
       const grid = this.querySelector('#work-items-grid') as HTMLElement;
       const input = this.querySelector('#search-input') as HTMLInputElement;
       const cards = Array.from(this.querySelectorAll('.work-card')) as HTMLElement[];
@@ -35,7 +47,7 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
       const params = new URLSearchParams(window.location.search);
       let tags = params.get('tags')?.split(',').filter(Boolean) || [];
       let techs = params.get('tech')?.split(',').filter(Boolean) || [];
-      let sort = params.get('sort') || 'date-desc';
+      let sort = params.get('sort') || 'relevance';
       input.value = params.get('search') || '';
 
       const flattenTechnologies = (technologies?: Record<string, string[]>) =>
@@ -45,7 +57,7 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
         const p = new URLSearchParams();
         if (tags.length) p.set('tags', tags.join(','));
         if (techs.length) p.set('tech', techs.join(','));
-        if (sort !== 'date-desc') p.set('sort', sort);
+        if (sort !== 'relevance') p.set('sort', sort);
         if (input.value) p.set('search', input.value);
         
         const search = p.toString();
@@ -76,6 +88,7 @@ const sortedWork = allWork.sort((a, b) => b.data.date.getTime() - a.data.date.ge
           })
           .sort((a, b) => {
             const da = new Date(a.data.date).getTime(), db = new Date(b.data.date).getTime();
+            if (sort === 'relevance') return (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER) || db - da;
             if (sort === 'date-desc') return db - da;
             if (sort === 'date-asc') return da - db;
             return sort === 'name-asc' ? a.data.title.localeCompare(b.data.title) : b.data.title.localeCompare(a.data.title);

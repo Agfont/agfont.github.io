@@ -10,6 +10,7 @@ const work = defineCollection({
     technologies: z.record(z.string(), z.array(z.string())).default({}),
     link: z.string().url().optional(),
     industries: z.array(z.string()).default([]),
+    order: z.number().optional(),
     date: z.coerce.date()
   }),
 });
