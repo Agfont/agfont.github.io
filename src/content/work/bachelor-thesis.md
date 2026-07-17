@@ -12,7 +12,7 @@ link: 'https://diposit.ub.edu/items/58183aec-3054-4f90-9bd4-620365d9bd04'
 order: 4
 ---
 
-## AI in Healthcare
+## Bachelor's Thesis
 
 My bachelor's thesis focused on applying machine learning techniques to healthcare data, specifically using the MIMIC-III dataset. The project involved clustering patients based on their medical records to identify patterns and subgroups that could be used to improve predictive models for hospital mortality and ICU length of stay. 
 

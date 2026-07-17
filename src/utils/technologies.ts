@@ -6,7 +6,8 @@ export const TECHNOLOGY_GROUPS: Record<string, string[]> = {
   Databases: ['ChromaDB', 'PostgreSQL'],
   DevOps: ['AWS', 'Docker', 'GitHub Actions', 'Kubernetes', 'Terraform'],
   'AI & ML': ['LangChain', 'LangGraph', 'MCP', 'OpenAI', 'PyTorch', 'Scikit-learn'],
-  'Data Science': ['Matplotlib', 'NumPy', 'Pandas', 'Seaborn']
+  'Data Science': ['Matplotlib', 'NumPy', 'Pandas', 'Seaborn'],
+  'Remote Sensing': ['Earthaccess', 'Geopandas', 'Pystac-client', 'Rasterio']
 };
 
 export const TECHNOLOGY_GROUP_COLORS: Record<string, string> = {
@@ -17,7 +18,8 @@ export const TECHNOLOGY_GROUP_COLORS: Record<string, string> = {
   Databases: '#b45309',
   DevOps: '#be123c',
   'AI & ML': '#166534',
-'Data Science': '#054724',
+  'Data Science': '#054724',
+  'Remote Sensing': '#1e40af',
   Other: '#475569'
 };
 

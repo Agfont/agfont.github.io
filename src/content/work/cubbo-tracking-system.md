@@ -15,7 +15,7 @@ link: 'https://tracking.cubbo.com/orders/V0RtTzZ4bHZzZz09LS1oK0NqZzNtQWJvRFRqU0U
 order: 2
 ---
 
-## Shipment Tracking at Scale
+## Cubbo Tracking System
 
 At Cubbo, I designed and delivered an end-to-end shipment tracking page that serves around 500K+ users annually. 
 
