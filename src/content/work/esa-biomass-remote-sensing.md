@@ -7,7 +7,7 @@ industries: ['Global Space Ecosystem']
 technologies:
   Language: ['Python']
   'Data Science': ['Earthaccess', 'Geopandas', 'Scikit-learn', 'Pandas', 'Pystac-client', 'Rasterio']
-link: 'https://agfont.github.io/notebooks/esa-biomass-remote-sensing.html'
+link: 'https://agfont.github.io/notebooks/esa-biomass-remote-sensing'
 order: 6
 ---
 
