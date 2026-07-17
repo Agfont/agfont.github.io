@@ -143,6 +143,7 @@ h5 {
 	font-family: var(--font-brand);
 	font-weight: 600;
 	color: var(--gray-100);
+	line-height: normal;
 }
 
 h1 {
@@ -151,6 +152,7 @@ h1 {
 
 h2 {
 	font-size: var(--text-4xl);
+	margin-bottom: 1rem;
 }
 
 h3 {
