@@ -11,7 +11,7 @@ technologies:
   Databases: ['ChromaDB']
   DevOps: ['AWS', 'GitHub Actions', 'Terraform']
   'AI & ML': ['OpenAI', 'LangChain', 'LangGraph', 'MCP']
-link: 'https://ai-lab-tutorial.netlify.app/'
+link: 'https://huggingface.co/spaces/Agfont/ai-lab-tutorial'
 order: 1
 ---
 
