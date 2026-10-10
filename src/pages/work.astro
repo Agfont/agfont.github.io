@@ -4,32 +4,20 @@ import Layout from '../layouts/Layout.astro';
 import WorkCard from '../components/WorkCard.astro';
 import FilterBar from '../components/FilterBar.astro';
 
-type WorkEntry = {
-  id: string;
-  data: {
-    title: string;
-    description: string;
-    fields?: string[];
-    technologies?: Record<string, string[]>;
-    date: Date;
-    order?: number;
-  };
-};
-
-const allWork = (await getCollection('work')) as WorkEntry[];
+const allWork = await getCollection('work');
 const sortedWork = allWork.sort((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER) || b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<Layout>
-  <main class="container">
+<Layout title="Work | Arthur Font" description="Projects by Arthur Font across web development, AI & ML, data science and remote sensing.">
+  <div class="container">
     <h1 class="heading">Some of my best work</h1>
     <work-filter data-work={JSON.stringify(sortedWork)}>
       <FilterBar />
       <div id="work-items-grid" class="work-grid">
-        {sortedWork.map((project: WorkEntry) => <WorkCard project={project} />)}
+        {sortedWork.map(project => <WorkCard project={project} />)}
       </div>
     </work-filter>
-  </main>
+  </div>
 </Layout>
 
 <script>

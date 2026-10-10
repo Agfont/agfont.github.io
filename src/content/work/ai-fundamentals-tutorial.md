@@ -10,7 +10,7 @@ technologies:
   'Web Framework': ['Flask']
   Databases: ['ChromaDB']
   DevOps: ['AWS', 'GitHub Actions', 'Terraform']
-  AI: ['OpenAI', 'LangChain', 'LangGraph', 'MCP']
+  'AI & ML': ['OpenAI', 'LangChain', 'LangGraph', 'MCP']
 link: 'https://ai-lab-tutorial.netlify.app/'
 order: 1
 ---

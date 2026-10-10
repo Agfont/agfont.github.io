@@ -1,7 +1,7 @@
 ---
 title: "Bachelor's Thesis"
 date: '2022-06-12'
-fields: ["AI", "Data Science"]
+fields: ["AI & ML", "Data Science"]
 description: 'Patient clustering in MIMIC-III for predictive models of hospital mortality and ICU length of stay.'
 industries: ['Healthcare AI']
 technologies:

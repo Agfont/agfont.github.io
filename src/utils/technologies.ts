@@ -36,3 +36,7 @@ export function getTechnologyGroup(technology: string): string {
 export function getTechnologyColor(technology: string): string {
   return TECHNOLOGY_GROUP_COLORS[getTechnologyGroup(technology)];
 }
+
+export function flattenTechnologies(technologies: Partial<Record<string, string[]>> = {}): string[] {
+  return Object.values(technologies).flatMap((list) => list ?? []);
+}

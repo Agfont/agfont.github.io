@@ -6,7 +6,8 @@ description: 'Introduction to ESA BIOMASS remote sensing and forest information 
 industries: ['Global Space Ecosystem']
 technologies:
   Language: ['Python']
-  'Data Science': ['Earthaccess', 'Geopandas', 'Scikit-learn', 'Pandas', 'Pystac-client', 'Rasterio']
+  'Data Science': ['Pandas', 'Scikit-learn']
+  'Remote Sensing': ['Earthaccess', 'Geopandas', 'Pystac-client', 'Rasterio']
 link: 'https://agfont.github.io/notebooks/esa-biomass-remote-sensing'
 order: 6
 ---

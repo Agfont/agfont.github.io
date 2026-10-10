@@ -7,19 +7,20 @@ import FormattedDate from "../components/FormattedDate.astro";
 import background from '../assets/background.svg';
 import type { CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
+import { flattenTechnologies } from "../utils/technologies";
 
 type Props = {
 	work: CollectionEntry<'work'>;
 };
 
 const { work } = Astro.props;
-const technologies = Object.values(work.data.technologies || {}).flat();
+const technologies = flattenTechnologies(work.data.technologies);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<MainHead />
+		<MainHead title={`${work.data.title} | Arthur Font`} description={work.data.description} />
 	</head>
 	<body>
 		<Header />

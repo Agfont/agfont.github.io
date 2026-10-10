@@ -14,7 +14,7 @@ npm run dev          # dev server at localhost:4321
 npm run build        # static build to ./dist/
 npm run preview      # serve the built site
 npx npm-check-updates -u && npm install   # update all dependencies to latest, including majors (rewrites package.json)
-npx astro check      # type-check (strict tsconfig); prompts to install @astrojs/check, which isn't a dependency yet
+npm run check        # type-check with astro check (strict tsconfig)
 ```
 
 There is no test suite or linter. Deployment is automatic: every push to `main` runs `.github/workflows/deploy.yaml` (`withastro/action`, Node 26) and publishes to GitHub Pages. Dependabot opens dependency PRs.
@@ -22,16 +22,16 @@ There is no test suite or linter. Deployment is automatic: every push to `main` 
 ## Architecture
 
 **Work/portfolio content** is an Astro content collection (`src/content.config.ts`), loaded from Markdown files in `src/content/work/` (files starting with `_` are ignored). Each file's frontmatter must match the zod schema:
-- `fields`: high-level categories (e.g. "Web Development", "AI & ML")
-- `technologies`: a map of **group name → list of technologies**, e.g. `Frontend: ['React', 'Tailwind CSS']`
+- `fields`: high-level categories, restricted to `WORK_FIELDS` in `src/utils/fields.ts` (which also feeds the filter menu)
+- `technologies`: a map of **group name → list of technologies**, e.g. `Frontend: ['React', 'Tailwind CSS']`; both keys and values must exist in `TECHNOLOGY_GROUPS`, otherwise the build fails
 - `order`: optional manual ranking (lower first); entries without it sort after, by `date` descending
 - `link`: optional external URL
 
 `src/pages/work/[work].astro` generates one page per entry via `getStaticPaths`, rendered with `src/layouts/WorkLayout.astro`. Other pages use `src/layouts/Layout.astro`.
 
-**Technology taxonomy** lives in `src/utils/technologies.ts`: `TECHNOLOGY_GROUPS` defines the groups and their technologies, and `TECHNOLOGY_GROUP_COLORS` the badge color per group. Tag colors are resolved by looking a technology up in `TECHNOLOGY_GROUPS`, not from the frontmatter group key, so a technology missing from that file shows up gray ("Other") and is absent from the filter menu. When adding a technology to a work entry, add it to `TECHNOLOGY_GROUPS` too.
+**Technology taxonomy** lives in `src/utils/technologies.ts`: `TECHNOLOGY_GROUPS` defines the groups and their technologies, and `TECHNOLOGY_GROUP_COLORS` the badge color per group. Tag colors are resolved by looking a technology up in `TECHNOLOGY_GROUPS`, not from the frontmatter group key. To use a new technology in a work entry, add it to `TECHNOLOGY_GROUPS` first.
 
-**Work page filtering** (`src/pages/work.astro`) is client-side: all entries are serialized into the `data-work` attribute of a `<work-filter>` custom element, which filters by search text, `fields` tags and technologies, sorts, and reorders/hides the server-rendered `WorkCard` elements. Filter state is synced to the URL query string (`tags`, `tech`, `sort`, `search`). The list of field tags offered in the filter is hardcoded as a default prop in `src/components/FilterBar.astro`, so a new `fields` value needs adding there to be filterable. The sort logic is duplicated between the frontmatter script and the client script of `work.astro`; keep both in sync.
+**Work page filtering** (`src/pages/work.astro`) is client-side: all entries are serialized into the `data-work` attribute of a `<work-filter>` custom element, which filters by search text, `fields` tags and technologies, sorts, and reorders/hides the server-rendered `WorkCard` elements. Filter state is synced to the URL query string (`tags`, `tech`, `sort`, `search`). The sort logic is duplicated between the frontmatter script and the client script of `work.astro`; keep both in sync.
 
 **Theming**: dark mode is a `theme-dark` class on `<html>`, set by an inline script in `MainHead.astro` (avoids a flash) and toggled by the `ThemeToggle` custom element. CSS variables are defined in `src/styles/global.css` (`:root` and `:root.theme-dark`); scoped component styles target dark mode with `:global(.theme-dark) ...`.
 

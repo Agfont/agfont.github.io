@@ -1,13 +1,6 @@
 ---
 import { TECHNOLOGY_GROUPS, getTechnologyColor } from '../utils/technologies';
-
-interface Props {
-  allFields?: string[];
-  allTechnologies?: Record<string, string[]>;
-}
-const { 
-  allFields = ['AI & ML', 'Data Science', 'DevOps', 'Distributed Systems', 'Remote Sensing', 'Robotics', 'Web Development'], 
-  allTechnologies = TECHNOLOGY_GROUPS } = Astro.props;
+import { WORK_FIELDS } from '../utils/fields';
 ---
 
 <div class="filter-sort-section">
@@ -34,7 +27,7 @@ const {
       </button>
       <div class="dropdown-menu" id="tag-menu" role="menu">
         <div class="menu-items" role="none">
-          {allFields.map(tag => (
+          {WORK_FIELDS.map(tag => (
             <button class="menu-item tag-item" data-tag={tag} role="menuitemcheckbox" aria-checked="false">
               <span class="checkbox" aria-hidden="true"></span>
               {tag}
@@ -55,7 +48,7 @@ const {
       </button>
       <div class="dropdown-menu" id="tech-menu" role="menu">
         <div class="menu-items tech-menu-items" role="none">
-          {Object.entries(allTechnologies).map(([group, techs]) => (
+          {Object.entries(TECHNOLOGY_GROUPS).map(([group, techs]) => (
             <div class="tech-group" role="none">
               <p class="tech-group-label">{group}</p>
               {techs.map((tech) => (

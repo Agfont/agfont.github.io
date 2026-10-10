@@ -1,13 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getTechnologyColor } from '../utils/technologies';
+import { flattenTechnologies, getTechnologyColor } from '../utils/technologies';
 
 interface Props {
   project: CollectionEntry<'work'>;
 }
 
 const { project } = Astro.props;
-const technologies = Object.values(project.data.technologies || {}).flat();
+const technologies = flattenTechnologies(project.data.technologies);
 ---
 
 <a class="work-card" href={`/work/${project.id}`} data-id={project.id}>
