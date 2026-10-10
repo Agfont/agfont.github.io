@@ -17,7 +17,7 @@ npx npm-check-updates -u && npm install   # update all dependencies to latest, i
 npm run check        # type-check with astro check (strict tsconfig)
 ```
 
-There is no test suite or linter; `npm run check` is the only static check. Deployment is automatic: every push to `main` runs `.github/workflows/deploy.yaml` (`withastro/action`, Node 26), which runs `npm run check && npm run build` and publishes to GitHub Pages, so type errors block the deploy. `.github/workflows/links.yaml` checks external links in `src/` weekly with lychee. Dependabot opens weekly PRs for npm (minor/patch grouped) and GitHub Actions.
+There is no test suite or linter; `npm run check` is the only static check. CI is a single workflow, `.github/workflows/ci.yaml` (`withastro/action`, Node 26): every PR and push runs `npm run check && npm run build`, so type errors block merges and deploys. Pushes to `main` then publish to GitHub Pages. Dependabot (`.github/dependabot.yml`) opens weekly grouped PRs for npm and GitHub Actions with a 3-day cooldown; `ci.yaml` squash-merges them once the build passes, unless the update is a semver major, and then dispatches itself on `main` to deploy (merges made with `GITHUB_TOKEN` don't trigger push workflows). `.github/workflows/links.yaml` checks external links in `src/` weekly with lychee.
 
 ## Architecture
 

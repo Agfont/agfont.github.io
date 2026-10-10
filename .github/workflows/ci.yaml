@@ -1,0 +1,59 @@
+name: CI
+
+# Builds every PR and push. Pushes to main deploy to GitHub Pages;
+# Dependabot minor/patch PRs are merged once the build passes (majors are left for review).
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: withastro/action@v6
+        with:
+          node-version: 26
+          build-cmd: npm run check && npm run build # Type errors fail the build
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+  automerge:
+    needs: build
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - id: metadata
+        uses: dependabot/fetch-metadata@v3
+      - if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh pr merge "${{ github.event.pull_request.number }}" --squash --delete-branch
+          # Merges made with GITHUB_TOKEN don't trigger push workflows, so start the deploy explicitly
+          gh workflow run ci.yaml --ref main

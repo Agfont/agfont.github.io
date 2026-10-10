@@ -1,4 +1,6 @@
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# Minor/patch PRs are auto-merged by .github/workflows/ci.yaml, so the cooldown
+# skips releases younger than a few days (most compromised packages are pulled by then).
 
 version: 2
 updates:
@@ -6,6 +8,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 3
     groups:
       minor-and-patch:
         update-types: ["minor", "patch"]
@@ -14,3 +18,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 3
+    groups:
+      actions:
+        patterns: ["*"]
