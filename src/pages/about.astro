@@ -3,6 +3,26 @@ import Layout from "../layouts/Layout.astro";
 import { Image } from 'astro:assets';
 import profilePicture from '../assets/me.jpeg';
 import cv from '../assets/ArthurFontCV.pdf';
+
+const experience = [
+  { period: 'Dec 2024 - Oct 2025', role: 'Software Engineer', place: 'Cubbo' },
+  { period: 'Nov 2022 - Oct 2025', role: 'Junior Full Stack Engineer', place: 'Cubbo' },
+  { period: 'Oct 2021 - Feb 2022', role: 'Salesforce B2C Commerce Developer', place: 'Capgemini' },
+  { period: 'Sep 2019 - Jul 2020', role: 'Collaborative Scholarship in Information Technology', place: 'University of Barcelona' },
+];
+
+const education = [
+  { period: '2025 - Present', role: "Master's in Computer Science (Distributed Systems and Networks)", place: 'University of Bologna' },
+  { period: '2018 - 2022', role: "Bachelor's in Computer Engineering", place: 'University of Barcelona' },
+];
+
+const languages = [
+  'Portuguese - Native (C2)',
+  'Spanish - Proficient (C2)',
+  'English - Advanced (C1)',
+  'Catalan - Advanced (C1)',
+  'Italian - Upper-intermediate (B2)',
+];
 ---
 
 <Layout title="About | Arthur Font" description="Background, experience, education and contact details of Arthur Font, software engineer.">
@@ -14,54 +34,38 @@ import cv from '../assets/ArthurFontCV.pdf';
         <p class="lead">I am a Software Engineer currently pursuing a Master's degree in Computer Science at the University of Bologna. I hold a Bachelor's degree in Computer Engineering from the University of Barcelona and speak English, Spanish, Portuguese, Catalan, and Italian.</p>
         <p class="lead">Born in Brazil and a Spanish citizen, I enjoy working in international environments. Beyond tech, my life is all about travel and sports, so there's a good chance you'll catch me out surfing or playing footvolley.</p>
         <p class="lead">I am always eager to connect, collaborate on exciting tech projects, and explore career opportunities.</p>
-        <p>Curriculum Vitae: <a href={cv} target="_blank">PDF</a></p>
+        <p>Curriculum Vitae: <a href={cv} target="_blank" rel="noopener noreferrer">PDF</a></p>
       </div>
     </header>
 
     <section>
       <h2>Experience</h2>
       <div class="items">
-        <div class="item">
-          <p class="period">Dec 2024 - Oct 2025</p>
-          <p><strong>Software Engineer</strong> - Cubbo</p>
-        </div>
-        <div class="item">
-          <p class="period">Nov 2022 - Oct 2025</p>
-          <p><strong>Junior Full Stack Engineer</strong> - Cubbo</p>
-        </div>
-        <div class="item">
-          <p class="period">Oct 2021 - Feb 2022</p>
-          <p><strong>Salesforce B2C Commerce Developer</strong> - Capgemini</p>
-        </div>
-        <div class="item">
-          <p class="period">Sep 2019 - Jul 2020</p>
-          <p><strong>Collaborative Scholarship in Information Technology</strong> - University of Barcelona</p>
-        </div>
+        {experience.map(({ period, role, place }) => (
+          <div class="item">
+            <p class="period">{period}</p>
+            <p><strong>{role}</strong> - {place}</p>
+          </div>
+        ))}
       </div>
     </section>
 
     <section>
       <h2>Education</h2>
       <div class="items">
-        <div class="item">
-          <p class="period">2025 - Present</p>
-          <p><strong>Master's in Computer Science (Distributed Systems and Networks)</strong> - University of Bologna</p>
-        </div>
-        <div class="item">
-          <p class="period">2018 - 2022</p>
-          <p><strong>Bachelor's in Computer Engineering</strong> - University of Barcelona</p>
-        </div>
+        {education.map(({ period, role, place }) => (
+          <div class="item">
+            <p class="period">{period}</p>
+            <p><strong>{role}</strong> - {place}</p>
+          </div>
+        ))}
       </div>
     </section>
 
     <section>
       <h2>Languages</h2>
       <ul>
-        <li>Portuguese - Native (C2)</li>
-        <li>Spanish - Proficient (C2)</li>
-        <li>English - Advanced (C1)</li>
-        <li>Catalan - Advanced (C1)</li>
-        <li>Italian - Upper-intermediate (B2)</li>
+        {languages.map(language => <li>{language}</li>)}
       </ul>
     </section>
 

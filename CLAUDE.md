@@ -17,7 +17,7 @@ npx npm-check-updates -u && npm install   # update all dependencies to latest, i
 npm run check        # type-check with astro check (strict tsconfig)
 ```
 
-There is no test suite or linter. Deployment is automatic: every push to `main` runs `.github/workflows/deploy.yaml` (`withastro/action`, Node 26) and publishes to GitHub Pages. Dependabot opens dependency PRs.
+There is no test suite or linter; `npm run check` is the only static check. Deployment is automatic: every push to `main` runs `.github/workflows/deploy.yaml` (`withastro/action`, Node 26), which runs `npm run check && npm run build` and publishes to GitHub Pages, so type errors block the deploy. `.github/workflows/links.yaml` checks external links in `src/` weekly with lychee. Dependabot opens weekly PRs for npm (minor/patch grouped) and GitHub Actions.
 
 ## Architecture
 
@@ -27,11 +27,11 @@ There is no test suite or linter. Deployment is automatic: every push to `main` 
 - `order`: optional manual ranking (lower first); entries without it sort after, by `date` descending
 - `link`: optional external URL
 
-`src/pages/work/[work].astro` generates one page per entry via `getStaticPaths`, rendered with `src/layouts/WorkLayout.astro`. Other pages use `src/layouts/Layout.astro`.
+`src/pages/work/[work].astro` generates one page per entry via `getStaticPaths`, rendered with `src/layouts/WorkLayout.astro`, which wraps `src/layouts/Layout.astro` (the shared HTML shell used by every page). Markdown entries can embed images from `src/assets/` with relative paths, and Astro optimizes them.
 
 **Technology taxonomy** lives in `src/utils/technologies.ts`: `TECHNOLOGY_GROUPS` defines the groups and their technologies, and `TECHNOLOGY_GROUP_COLORS` the badge color per group. Tag colors are resolved by looking a technology up in `TECHNOLOGY_GROUPS`, not from the frontmatter group key. To use a new technology in a work entry, add it to `TECHNOLOGY_GROUPS` first.
 
-**Work page filtering** (`src/pages/work.astro`) is client-side: all entries are serialized into the `data-work` attribute of a `<work-filter>` custom element, which filters by search text, `fields` tags and technologies, sorts, and reorders/hides the server-rendered `WorkCard` elements. Filter state is synced to the URL query string (`tags`, `tech`, `sort`, `search`). The sort logic is duplicated between the frontmatter script and the client script of `work.astro`; keep both in sync.
+**Work page filtering** (`src/pages/work.astro`) is client-side. Entries are converted to slim `WorkItem` objects (`toWorkItem` in `src/utils/work.ts`), which feed both the server-rendered `WorkCard`s and the `data-work` attribute of a `<work-filter>` custom element. That element filters by search text, `fields` and technologies, then hides and reorders the cards. Filter state is synced to the URL query string (`tags`, `tech`, `sort`, `search`). Sorting is a single `sortWork` function in `src/utils/work.ts`, imported by both the frontmatter and the client script.
 
 **Theming**: dark mode is a `theme-dark` class on `<html>`, set by an inline script in `MainHead.astro` (avoids a flash) and toggled by the `ThemeToggle` custom element. CSS variables are defined in `src/styles/global.css` (`:root` and `:root.theme-dark`); scoped component styles target dark mode with `:global(.theme-dark) ...`.
 
@@ -39,6 +39,6 @@ There is no test suite or linter. Deployment is automatic: every push to `main` 
 
 **Notebooks**: `src/pages/notebooks/*.html` are exported Jupyter notebooks served as standalone pages (e.g. `/notebooks/esa-biomass-remote-sensing`), linked from a work entry's `link`. They are large generated files; regenerate rather than hand-edit.
 
-## Repo instructions
+## Astro documentation
 
-`.github/instructions/astro.instructions.md` holds general Astro best-practice guidance (Content Layer API, `astro:assets` for images, minimal client-side JS, scoped styles). The existing `README.md` is the unmodified Astro starter template.
+For Astro APIs and best practices, query the Astro docs MCP server (`astro-docs`, configured in `.mcp.json`) rather than relying on memory, since Astro changes quickly between majors.

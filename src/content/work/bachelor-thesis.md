@@ -16,6 +16,6 @@ order: 4
 
 My bachelor's thesis focused on applying machine learning techniques to healthcare data, specifically using the MIMIC-III dataset. The project involved clustering patients based on their medical records to identify patterns and subgroups that could be used to improve predictive models for hospital mortality and ICU length of stay. 
 
-Python and libraries such as PyTorch, Scikit-learn, Pandas, NumPy, Matplotlib, and Seaborn was used for data preprocessing, analysis, and visualization. 
+Python and libraries such as PyTorch, Scikit-learn, Pandas, NumPy, Matplotlib, and Seaborn were used for data preprocessing, analysis, and visualization. 
 
 The results of this research provided insights into patient stratification and highlighted the potential of AI in enhancing clinical decision-making and patient outcomes in critical care settings.

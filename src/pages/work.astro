@@ -3,9 +3,9 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import WorkCard from '../components/WorkCard.astro';
 import FilterBar from '../components/FilterBar.astro';
+import { sortWork, toWorkItem } from '../utils/work';
 
-const allWork = await getCollection('work');
-const sortedWork = allWork.sort((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER) || b.data.date.getTime() - a.data.date.getTime());
+const sortedWork = sortWork((await getCollection('work')).map(toWorkItem), 'relevance');
 ---
 
 <Layout title="Work | Arthur Font" description="Projects by Arthur Font across web development, AI & ML, data science and remote sensing.">
@@ -16,131 +16,132 @@ const sortedWork = allWork.sort((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEG
       <div id="work-items-grid" class="work-grid">
         {sortedWork.map(project => <WorkCard project={project} />)}
       </div>
+      <p id="no-results" class="no-results" role="status" hidden>No projects match your filters.</p>
     </work-filter>
   </div>
 </Layout>
 
 <script>
+  import { sortWork, type WorkItem, type WorkSort } from '../utils/work';
+
   class WorkFilter extends HTMLElement {
+    private abort = new AbortController();
+
     connectedCallback() {
-      const items = JSON.parse(this.dataset.work || '[]') as { id: string; data: { title: string; description: string; fields?: string[]; technologies?: Record<string, string[]>; date: string; order?: number } }[];
+      const items = JSON.parse(this.dataset.work || '[]') as WorkItem[];
       const grid = this.querySelector('#work-items-grid') as HTMLElement;
+      const noResults = this.querySelector('#no-results') as HTMLElement;
       const input = this.querySelector('#search-input') as HTMLInputElement;
-      const cards = Array.from(this.querySelectorAll('.work-card')) as HTMLElement[];
-      const cardMap = new Map(cards.map(c => [c.dataset.id, c]));
       const tagCount = this.querySelector('#tag-count') as HTMLElement;
       const techCount = this.querySelector('#tech-count') as HTMLElement;
       const sortLabel = this.querySelector('#sort-label') as HTMLElement;
+      const dropdowns = Array.from(this.querySelectorAll<HTMLElement>('.custom-dropdown'));
+      const tagItems = Array.from(this.querySelectorAll<HTMLElement>('.tag-item'));
+      const techItems = Array.from(this.querySelectorAll<HTMLElement>('.tech-item'));
+      const sortItems = Array.from(this.querySelectorAll<HTMLElement>('.sort-item'));
+      const cardMap = new Map(
+        Array.from(this.querySelectorAll<HTMLElement>('.work-card')).map(c => [c.dataset.id, c])
+      );
 
+      // Restore state from the URL
       const params = new URLSearchParams(window.location.search);
-      let tags = params.get('tags')?.split(',').filter(Boolean) || [];
-      let techs = params.get('tech')?.split(',').filter(Boolean) || [];
-      let sort = params.get('sort') || 'relevance';
+      let tags = params.get('tags')?.split(',').filter(Boolean) ?? [];
+      let techs = params.get('tech')?.split(',').filter(Boolean) ?? [];
+      const sortParam = params.get('sort');
+      let sort = (sortItems.some(el => el.dataset.sort === sortParam) ? sortParam : 'relevance') as WorkSort;
       input.value = params.get('search') || '';
 
-      const flattenTechnologies = (technologies?: Record<string, string[]>) =>
-        Object.values(technologies || {}).flat();
+      const setActive = (el: HTMLElement, active: boolean) => {
+        el.classList.toggle('active', active);
+        el.setAttribute('aria-checked', String(active));
+      };
+
+      const setOpen = (dropdown: HTMLElement, open: boolean) => {
+        dropdown.classList.toggle('open', open);
+        dropdown.querySelector('.dropdown-trigger')!.setAttribute('aria-expanded', String(open));
+      };
 
       const update = () => {
+        const search = input.value.trim().toLowerCase();
+
         const p = new URLSearchParams();
         if (tags.length) p.set('tags', tags.join(','));
         if (techs.length) p.set('tech', techs.join(','));
         if (sort !== 'relevance') p.set('sort', sort);
-        if (input.value) p.set('search', input.value);
-        
-        const search = p.toString();
-        const newUrl = search ? `?${search}${location.hash}` : location.pathname + location.hash;
-        window.history.replaceState({}, '', newUrl);
+        if (search) p.set('search', input.value.trim());
+        const query = p.toString();
+        window.history.replaceState({}, '', (query ? `?${query}` : location.pathname) + location.hash);
 
-        // Sync UI state
-        this.querySelectorAll('.tag-item').forEach(el => el.classList.toggle('active', tags.includes((el as HTMLElement).dataset.tag!)));
-        this.querySelectorAll('.tech-item').forEach(el => el.classList.toggle('active', techs.includes((el as HTMLElement).dataset.tech!)));
-        if (tagCount) tagCount.textContent = tags.length ? `(${tags.length})` : '';
-        if (techCount) techCount.textContent = techs.length ? `(${techs.length})` : '';
-        this.querySelectorAll('.sort-item').forEach(el => {
-          const active = (el as HTMLElement).dataset.sort === sort;
-          el.classList.toggle('active', active);
-          if (active && sortLabel) sortLabel.textContent = el.textContent;
+        tagItems.forEach(el => setActive(el, tags.includes(el.dataset.tag!)));
+        techItems.forEach(el => setActive(el, techs.includes(el.dataset.tech!)));
+        sortItems.forEach(el => {
+          setActive(el, el.dataset.sort === sort);
+          if (el.dataset.sort === sort) sortLabel.textContent = el.textContent;
+        });
+        tagCount.textContent = tags.length ? `(${tags.length})` : '';
+        techCount.textContent = techs.length ? `(${techs.length})` : '';
+
+        const filtered = items.filter(i => {
+          const hay = [i.title, i.description, ...i.fields, ...i.technologies].map(s => s.toLowerCase());
+          return (!search || hay.some(s => s.includes(search)))
+            && (!tags.length || tags.some(t => i.fields.includes(t)))
+            && (!techs.length || techs.some(t => i.technologies.includes(t)));
         });
 
-        // Filter and Sort
-        const searchStr = input.value.toLowerCase();
-        const filtered = items
-          .filter(i => {
-            const technologies = flattenTechnologies(i.data.technologies);
-            const hay = [i.data.title, i.data.description, ...(i.data.fields || []), ...technologies].filter(Boolean).map(x => String(x).toLowerCase());
-            const matchesSearch = !searchStr || hay.some(s => s.includes(searchStr));
-            const matchesTags = !tags.length || tags.some(t => (i.data.fields || []).includes(t));
-            const matchesTech = !techs.length || techs.some(t => technologies.includes(t));
-            return matchesSearch && matchesTags && matchesTech;
-          })
-          .sort((a, b) => {
-            const da = new Date(a.data.date).getTime(), db = new Date(b.data.date).getTime();
-            if (sort === 'relevance') return (a.data.order ?? Number.MAX_SAFE_INTEGER) - (b.data.order ?? Number.MAX_SAFE_INTEGER) || db - da;
-            if (sort === 'date-desc') return db - da;
-            if (sort === 'date-asc') return da - db;
-            return sort === 'name-asc' ? a.data.title.localeCompare(b.data.title) : b.data.title.localeCompare(a.data.title);
-          });
-
-        // Render reordered grid
-        const ids = new Set(filtered.map(i => i.id));
-        cards.forEach(c => (c.style.display = ids.has(c.dataset.id!) ? '' : 'none'));
-        filtered.forEach(i => grid?.appendChild(cardMap.get(i.id)!));
+        const visible = new Set(filtered.map(i => i.id));
+        cardMap.forEach((card, id) => (card.hidden = !visible.has(id!)));
+        sortWork(filtered, sort).forEach(i => grid.appendChild(cardMap.get(i.id)!));
+        noResults.hidden = filtered.length > 0;
       };
 
-      this.addEventListener('click', (e) => {
+      const toggle = (list: string[], value: string) =>
+        list.includes(value) ? list.filter(x => x !== value) : [...list, value];
+
+      const { signal } = this.abort;
+
+      this.addEventListener('click', e => {
         const target = e.target as HTMLElement;
-        const trigger = target.closest('.dropdown-trigger');
-        const dropdown = target.closest('.custom-dropdown');
-        const tagItem = target.closest('.tag-item') as HTMLElement;
-        const sortItem = target.closest('.sort-item') as HTMLElement;
+        const trigger = target.closest<HTMLElement>('.dropdown-trigger');
+        const tagItem = target.closest<HTMLElement>('.tag-item');
+        const techItem = target.closest<HTMLElement>('.tech-item');
+        const sortItem = target.closest<HTMLElement>('.sort-item');
 
         if (trigger) {
-          const isOpen = trigger.parentElement!.classList.contains('open');
-          this.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
-          trigger.parentElement!.classList.toggle('open', !isOpen);
-          e.stopPropagation();
-        } else if (!dropdown) {
-          // Click happened outside any dropdown — close all dropdowns
-          this.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
-        }
-
-        if (tagItem) {
-          const t = tagItem.dataset.tag!;
-          tags = tags.includes(t) ? tags.filter(x => x !== t) : [...tags, t];
+          // Only one dropdown open at a time
+          const dropdown = trigger.parentElement!;
+          const open = !dropdown.classList.contains('open');
+          dropdowns.forEach(d => setOpen(d, d === dropdown && open));
+        } else if (tagItem) {
+          tags = toggle(tags, tagItem.dataset.tag!);
           update();
-          e.stopPropagation();
-        }
-
-        const techItem = target.closest('.tech-item') as HTMLElement;
-        if (techItem) {
-          const t = techItem.dataset.tech!;
-          techs = techs.includes(t) ? techs.filter(x => x !== t) : [...techs, t];
+        } else if (techItem) {
+          techs = toggle(techs, techItem.dataset.tech!);
           update();
-          e.stopPropagation();
-        }
-
-        if (sortItem) {
-          sort = sortItem.dataset.sort!;
+        } else if (sortItem) {
+          sort = sortItem.dataset.sort as WorkSort;
           update();
         }
-      });
+      }, { signal });
 
-      input.addEventListener('input', update);
+      // Close dropdowns on outside click or Escape
+      document.addEventListener('click', e => {
+        if (!(e.target as HTMLElement).closest('.custom-dropdown')) dropdowns.forEach(d => setOpen(d, false));
+      }, { signal });
+      this.addEventListener('keydown', e => {
+        const open = dropdowns.find(d => d.classList.contains('open'));
+        if (e.key === 'Escape' && open) {
+          setOpen(open, false);
+          open.querySelector<HTMLElement>('.dropdown-trigger')!.focus();
+        }
+      }, { signal });
+
+      input.addEventListener('input', update, { signal });
       update();
-
-      // Close dropdowns when clicking outside this component
-      (this as any)._outsideClickHandler = (e: Event) => {
-        const target = e.target as Node;
-        if (!this.contains(target)) {
-          this.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
-        }
-      };
-      document.addEventListener('click', (this as any)._outsideClickHandler);
     }
 
     disconnectedCallback() {
-      document.removeEventListener('click', (this as any)._outsideClickHandler);
+      this.abort.abort();
+      this.abort = new AbortController();
     }
   }
   customElements.define('work-filter', WorkFilter);
@@ -159,6 +160,11 @@ const sortedWork = allWork.sort((a, b) => (a.data.order ?? Number.MAX_SAFE_INTEG
     font-weight: 600;
     text-align: center;
     color: var(--gray-0);
+  }
+  .no-results {
+    text-align: center;
+    color: var(--gray-400);
+    margin: 2rem 0;
   }
   .work-grid {
     display: grid;

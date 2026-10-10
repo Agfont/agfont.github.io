@@ -6,7 +6,7 @@ description: 'Custom headless Shopify e-commerce store for organic food.'
 industries: ['E-commerce']
 technologies:
   Language: ['JS/TS']
-  'Web Framework': ['Next.js']
+  'Web Framework': ['Next.js', 'Node.js']
   APIs: ['GraphQL', 'Shopify']
   Frontend: ['React', 'Tailwind CSS']
 link: 'https://www.healthymarketbr.com/'

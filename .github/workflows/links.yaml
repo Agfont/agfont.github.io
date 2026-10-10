@@ -1,0 +1,27 @@
+name: Check links
+
+on:
+  # Weekly, since external links break on their own schedule
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check links in content and pages
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # LinkedIn answers bots with HTTP 999, so it is excluded
+          args: >-
+            --no-progress
+            --exclude linkedin\.com
+            --exclude-path src/pages/notebooks
+            'src/**/*.md'
+            'src/**/*.astro'
+          fail: true

@@ -1,47 +1,27 @@
-# Astro Starter Kit: Basics
+# agfont.github.io
+
+Personal portfolio of Arthur Font, live at https://agfont.github.io.
+
+Built with [Astro](https://astro.build) as a fully static site, with no UI framework.
+
+## Development
 
 ```sh
-npm create astro@latest -- --template basics
+npm install
+npm run dev      # dev server at http://localhost:4321
+npm run check    # type-check
+npm run build    # static build to ./dist/
+npm run preview  # serve the built site
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Adding a project
 
-## 🚀 Project Structure
+Add a Markdown file to `src/content/work/`. Its frontmatter is validated by the schema in `src/content.config.ts`; `fields` must come from `src/utils/fields.ts` and technologies from `src/utils/technologies.ts`.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Deployment
 
-```text
-/
-├── public/
-│   └── favicon.ico
-├── src
-│   ├── assets
-│   │   └── background.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+Every push to `main` type-checks, builds and deploys to GitHub Pages (`.github/workflows/deploy.yaml`).
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## License
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-| `npx npm-check-updates -u && npm install` | Update all dependencies to their latest versions, including major versions |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Content is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).

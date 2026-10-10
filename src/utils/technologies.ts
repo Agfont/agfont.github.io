@@ -1,6 +1,6 @@
 export const TECHNOLOGY_GROUPS: Record<string, string[]> = {
   Language: ['JS/TS', 'Python', 'Ruby'],
-  'Web Framework': ['Flask', 'Next.js', 'Rails',],
+  'Web Framework': ['Flask', 'Next.js', 'Node.js', 'Rails'],
   APIs: ['Shopify', 'GraphQL', 'Tracking APIs', 'WebGL'],
   Frontend: ['Astro', 'CSS', 'HTML', 'React', 'Tailwind CSS'],
   Databases: ['ChromaDB', 'PostgreSQL'],

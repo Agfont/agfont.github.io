@@ -1,25 +1,24 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import { flattenTechnologies, getTechnologyColor } from '../utils/technologies';
+import { getTechnologyColor } from '../utils/technologies';
+import type { WorkItem } from '../utils/work';
 
 interface Props {
-  project: CollectionEntry<'work'>;
+  project: WorkItem;
 }
 
 const { project } = Astro.props;
-const technologies = flattenTechnologies(project.data.technologies);
 ---
 
 <a class="work-card" href={`/work/${project.id}`} data-id={project.id}>
-  <h3 class="title">{project.data.title}</h3>
-  <p class="description">{project.data.description}</p>
+  <h3 class="title">{project.title}</h3>
+  <p class="description">{project.description}</p>
   <div class="tags">
-    {project.data.fields.map(tag => (
+    {project.fields.map(tag => (
       <span class="tag">{tag}</span>
     ))}
   </div>
   <div class="tags">
-    {technologies.map(tech => (
+    {project.technologies.map(tech => (
       <span class="tag tech" style={`--tech-bg: ${getTechnologyColor(tech)}`}>{tech}</span>
     ))}
   </div>
@@ -39,6 +38,10 @@ const technologies = flattenTechnologies(project.data.technologies);
     text-decoration: none;
     color: inherit;
     gap: 0.5rem;
+  }
+
+  .work-card[hidden] {
+    display: none;
   }
 
   .work-card:hover {
@@ -83,10 +86,6 @@ const technologies = flattenTechnologies(project.data.technologies);
   .work-card .tech {
     color: #ffffff;
     background-color: color-mix(in srgb, var(--tech-bg) 80%, var(--gray-600));
-  }
-
-  .theme-dark .work-card .tag {
-    background-color: var(--gray-700);
   }
 
 </style>
