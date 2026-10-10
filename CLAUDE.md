@@ -17,7 +17,7 @@ npx npm-check-updates -u && npm install   # update all dependencies to latest, i
 npx astro check      # type-check (strict tsconfig); prompts to install @astrojs/check, which isn't a dependency yet
 ```
 
-There is no test suite or linter. Deployment is automatic: every push to `main` runs `.github/workflows/deploy.yaml` (`withastro/action`, Node 24) and publishes to GitHub Pages. Dependabot opens dependency PRs.
+There is no test suite or linter. Deployment is automatic: every push to `main` runs `.github/workflows/deploy.yaml` (`withastro/action`, Node 26) and publishes to GitHub Pages. Dependabot opens dependency PRs.
 
 ## Architecture
 
