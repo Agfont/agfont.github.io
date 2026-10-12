@@ -20,6 +20,8 @@ jobs:
           # LinkedIn answers bots with HTTP 999, so it is excluded
           args: >-
             --no-progress
+            --max-retries 3
+            --retry-wait-time 2
             --exclude linkedin\.com
             --exclude-path src/pages/notebooks
             'src/**/*.md'
